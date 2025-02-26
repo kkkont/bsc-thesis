@@ -94,6 +94,8 @@ data = load_csv("data/adult.csv")
 data = preprocess_data(data)
 # Limit data to reduce training time right now. 
 # data = data[:10000] 
+data = standardize_data(data)
+print(data[0])
 
 X = [row[:-1] for row in data]
 y = [row[-1] for row in data]
