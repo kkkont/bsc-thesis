@@ -1,57 +1,66 @@
 using Random
-using CSV
 using DataFrames
 using Statistics
 using LinearAlgebra
+using CSV
 
-# Load CSV data
-# Function to load CSV file
-function load_csv(filename)
-    return CSV.File(filename) |> DataFrame
-end
-
-# Preprocess data
-function preprocess_data(df)
-    # Remove rows with missing values
-    dropmissing!(df)
-
-    # Convert target column to binary (assumes target is the last column)
-    df[!, end] .= (df[!, end] .== ">50K") .+ 0
-
-    # Define categorical columns
-    categorical_columns = [2, 4, 6, 7, 8, 9, 10, 14]
-    
-    # Convert categorical columns to numerical indices
-    for col in categorical_columns
-        unique_values = unique(df[!, col])
-        value_to_index = Dict(value => i for (i, value) in enumerate(sort(unique_values)))
-        df[!, col] .= [value_to_index[val] for val in df[!, col]]
-    end
-
-    # Convert categorical columns to integers
-    for col in 1:ncol(df)-1
-        if col in categorical_columns
-            df[!, col] .= Int.(df[!, col])
-        else
-            df[!, col] .= Float64.(df[!, col])
+function preprocess_data(data::DataFrame)
+    for col in names(data)
+        if eltype(data[!, col]) <: AbstractString  # Ensure it's a string column
+            data[!, col] = replace(data[!, col], "?" => missing)
         end
     end
+    
+    # Drop rows with missing values
+    data = dropmissing(data) 
 
-    return df
-end
+    # Ensure categorical columns are stored as standard String arrays before encoding
+    categorical_cols = [2, 4, 6, 7, 8, 9, 10, 14]  # 1-based indexing in Julia
+    numerical_cols = [1, 3, 5, 11, 12, 13]
+    target_col = ncol(data)  # Target column is the last column
 
-function standardize_data(df)
-    for col in 1:ncol(df)-1
-        column_data = df[!, col]
+    # Convert target variable to binary (1 for '>50K', 0 for '<=50K')
+    data[!, target_col] .= (data[:, target_col] .== ">50K") .+ 0  # Binary target
 
-        mean_val = mean(column_data)
-        std_val = std(column_data)
-       
-        df[!, col] .= (column_data .- mean_val) ./ std_val
+    # Convert categorical columns to standard String vectors
+    for col in categorical_cols
+        data[!, col] = string.(data[:, col])  # Convert to standard String array
     end
 
-    return df
+    # Encode categorical columns
+    mappings = Dict{Int, Dict{String, Int}}()
+    for col in categorical_cols
+        unique_vals = sort(unique(data[:, col]))
+        mappings[col] = Dict(val => i for (i, val) in enumerate(unique_vals))
+    end
+
+    # Replace categorical values with encoded values
+    for col in categorical_cols
+        data[!, col] .= [mappings[col][val] for val in data[:, col]]
+    end
+
+    # Convert all numerical columns to Float64 before normalization
+    for col in numerical_cols
+        data[!, col] .= float.(data[:, col])
+    end
+
+    # Normalize numerical columns (Min-Max scaling)
+    numerical_data = Matrix(data[:, numerical_cols])  # Extract numerical data as a matrix
+    normalized_numerical_data = normalize(numerical_data)
+
+    # Replace numerical columns with normalized values
+    data[:, numerical_cols] .= normalized_numerical_data
+
+    return data
 end
+
+# Normalize features (Min-Max scaling)
+function normalize(X::Matrix)
+    mins = minimum(X, dims=1)
+    maxs = maximum(X, dims=1)
+    return (X .- mins) ./ (maxs .- mins)  # Element-wise Min-Max scaling
+end
+
 
 function train_test_split_manual(X, y, test_size=0.2)
     data = hcat(X, y)
@@ -102,16 +111,17 @@ end
 
 preprocess_start = time()
 # Load and preprocess data
-data = load_csv("data/adult.csv")
+data = CSV.read("data/adult.csv", DataFrame) 
 data = preprocess_data(data)
 
 X = data[:, 1:end-1]  
 y = data[:, end]
 
 X_train, y_train, X_test, y_test = train_test_split_manual(X, y)
-X_train = standardize_data(X_train)
-X_test= standardize_data(X_test)
 
+
+println(X_train[1:5,:])
+println(size(X_train))
 # Convert DataFrame to Matrix (Fix: Ensure compatibility with matrix operations)
 X_train = Matrix{Float64}(X_train)
 X_test = Matrix{Float64}(X_test)

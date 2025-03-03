@@ -2,127 +2,126 @@ import random
 import math
 import time
 
-# Load the datased from csv file
+# Load dataset
 def load_csv(filename):
     with open(filename, 'r') as file:
         data = [line.strip().split(',') for line in file]
-    return data
+    return data[1:]  # Skip header
 
 def preprocess_data(data):
-    header = data[0]
-    data = data[1:]
-
     # Remove rows with missing values
     data = [row for row in data if '?' not in row]
 
-    # Convert target column to binary
+    # Define column indices
+    categorical_cols = [1, 3, 5, 6, 7, 8, 9, 13]
+    numerical_cols = [0, 2, 4, 10, 11, 12]
+    target_col = -1
+
+    # Convert target variable to binary (1 for '>50K', 0 for '<=50K')
     for row in data:
-        row[-1] = 1 if row[-1] == '>50K' else 0
+        row[target_col] = 1 if row[target_col] == '>50K' else 0  # Binary target
 
-    # Convert categorical columns to numerical indices manually
-    categorical_columns = [1, 3, 5, 6, 7, 8, 9, 13, 14]
-    category_mappings = {}
-    for col in categorical_columns:
-        unique_values = sorted(set(row[col] for row in data))
-        category_mappings[col] = {value: i for i, value in enumerate(unique_values)}
-        for row in data:
-            row[col] = category_mappings[col][row[col]]
-    
-    # Convert numerical columns to float
-    for i in range(len(data)):
-        data[i] = [float(val) if idx not in categorical_columns else int(val) for idx, val in enumerate(data[i])]
+    # Encode categorical columns
+    mappings = {col: {val: i for i, val in enumerate(sorted(set(row[col] for row in data)))} for col in categorical_cols}
+    for row in data:
+        for col in categorical_cols:
+            row[col] = mappings[col][row[col]]  # Replace categorical values with encoded values
 
-    return data
+    # Separate features and target
+    features = [row[:-1] for row in data]  # All columns except the target
+    target = [row[-1] for row in data]  # Only the target column
 
+    # Convert all numerical columns to floats before normalization
+    for row in features:
+        for col in numerical_cols:
+            row[col] = float(row[col])  # Convert to float to ensure numerical operations
 
-# Standardize features manually
-def standardize_data(X):
-    means = [sum(col) / len(col) for col in zip(*X)]
-    stds = [math.sqrt(sum((x - mean) ** 2 for x in col) / len(col)) for col, mean in zip(zip(*X), means)]
-    return [[(x - mean) / std if std != 0 else 0 for x, mean, std in zip(row, means, stds)] for row in X]
+    # Normalize numerical columns (Min-Max scaling)
+    numerical_data = [[row[col] for col in numerical_cols] for row in features]
+    normalized_numerical_data = normalize(numerical_data)
 
-# Train-test split manually
-def train_test_split_manual(data, test_size=0.2):
-    random.shuffle(data)
-    split_idx = int(len(data) * (1 - test_size))
-    return data[:split_idx], data[split_idx:]
+    # Replace the numerical columns in features with normalized data
+    for i, row in enumerate(features):
+        for j, col in enumerate(numerical_cols):
+            row[col] = normalized_numerical_data[i][j]
 
-# Sigmoid function
+    # Combine features and target back together
+    final_data = [row + [target[i]] for i, row in enumerate(features)]  # Append target to the feature list
+
+    return final_data
+
+# Normalize features (Min-Max scaling)
+def normalize(X):
+    mins = [min(col) for col in zip(*X)]
+    maxs = [max(col) for col in zip(*X)]
+    return [[(x - mn) / (mx - mn) if mx > mn else 0 for x, mn, mx in zip(row, mins, maxs)] for row in X]
+
+# Sigmoid function with clamping
 def sigmoid(z):
-    if z < -700:  # Prevent overflow
-        return 0
-    elif z > 700:  # Prevent overflow
+    # Clamp the value to avoid overflow issues
+    if z > 700:
         return 1
+    elif z < -700:
+        return 0
     return 1 / (1 + math.exp(-z))
 
+# Train-test split
+def train_test_split(data, test_size=0.2):
+    random.shuffle(data)
+    split = int(len(data) * (1 - test_size))
+    return data[:split], data[split:]
 
-
-# Logistic regression class
+# Logistic Regression model
 class LogisticRegression:
-    def __init__(self, learning_rate=0.01, epochs=1000):
-        self.learning_rate = learning_rate
+    def __init__(self, lr=0.01, epochs=500):
+        self.lr = lr
         self.epochs = epochs
         self.weights = []
         self.bias = 0
-    
+
     def fit(self, X, y):
-        n_samples, n_features = len(X), len(X[0])
-        self.weights = [0] * n_features
-        
+        self.weights = [0] * len(X[0])
         for _ in range(self.epochs):
-            for i in range(n_samples):
-                linear_model = sum(w * x for w, x in zip(self.weights, X[i])) + self.bias
-                prediction = sigmoid(linear_model)
-                error = prediction - y[i]
-                
-                for j in range(n_features):
-                    self.weights[j] -= self.learning_rate * error * X[i][j]
-                self.bias -= self.learning_rate * error
-    
+            for xi, yi in zip(X, y):
+                pred = sigmoid(sum(w * x for w, x in zip(self.weights, xi)) + self.bias)
+                error = pred - yi
+                for j in range(len(self.weights)):
+                    self.weights[j] -= self.lr * error * xi[j]
+                self.bias -= self.lr * error
+
     def predict(self, X):
-        predictions = []
-        for row in X:
-            linear_model = sum(w * x for w, x in zip(self.weights, row)) + self.bias
-            predictions.append(1 if sigmoid(linear_model) > 0.5 else 0)
-        return predictions
-    
-# Track time and memory usage
+        return [1 if sigmoid(sum(w * x for w, x in zip(self.weights, row)) + self.bias) > 0.5 else 0 for row in X]
+
+# Measure time
 start_time = time.time()
 
-# Load, preprocess, and split the data
+# Load & preprocess data
 data = load_csv("data/adult.csv")
+
+# Track preprocessing time
+preprocess_start = time.time()
 data = preprocess_data(data)
-# Limit data to reduce training time right now. 
-# data = data[:10000] 
-data = standardize_data(data)
-print(data[0])
+X, y = [row[:-1] for row in data], [row[-1] for row in data]
+preprocess_time = time.time() - preprocess_start
 
-X = [row[:-1] for row in data]
-y = [row[-1] for row in data]
-
-train_data, test_data = train_test_split_manual(data)
-X_train, y_train = [row[:-1] for row in train_data], [row[-1] for row in train_data]
-X_test, y_test = [row[:-1] for row in test_data], [row[-1] for row in test_data]
-
-X_train = standardize_data(X_train)
-X_test = standardize_data(X_test)
-
-
-# Track time after preprocessing
-preprocessing_time = time.time() - start_time
-
-# Start training
-model = LogisticRegression(learning_rate=0.01, epochs=1000)
+# Train-test split
+train, test = train_test_split(data)
+X_train, y_train = [row[:-1] for row in train], [row[-1] for row in train]
+X_test, y_test = [row[:-1] for row in test], [row[-1] for row in test]
+print(len(X_train))
+# Track training time
+train_start = time.time()
+model = LogisticRegression(lr=0.01, epochs=500)
 model.fit(X_train, y_train)
+train_time = time.time() - train_start
 
-# Track time after training
-training_time = time.time() - start_time
-
-# Predict and calculate accuracy
+# Evaluate model
 y_pred = model.predict(X_test)
-accuracy = sum(1 for pred, actual in zip(y_pred, y_test) if pred == actual) / len(y_test)
+accuracy = sum(1 for p, a in zip(y_pred, y_test) if p == a) / len(y_test)
 
-# Display results
+# Results
+total_time = time.time() - start_time
 print(f"Accuracy: {accuracy:.4f}")
-print(f"Preprocessing Time: {preprocessing_time:.4f} seconds")
-print(f"Training Time: {training_time - preprocessing_time:.4f} seconds")
+print(f"Preprocessing Time: {preprocess_time:.4f} seconds")
+print(f"Training Time: {train_time:.4f} seconds")
+print(f"Total Time: {total_time:.4f} seconds")
