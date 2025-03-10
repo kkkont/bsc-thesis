@@ -9,7 +9,10 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-lmlpack",
+                "-fopenmp",
+                "-larmadillo"
             ],
             "options": {
                 "cwd": "${fileDirname}"
