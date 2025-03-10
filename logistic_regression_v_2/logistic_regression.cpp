@@ -31,7 +31,7 @@ std::tuple<mat, Row<size_t>> preprocess(mat dataset) {
 int main() {
     // Read the CSV file
     mat dataset;
-    data::Load("../data/without_header.csv", dataset, true);
+    data::Load("../data/creditcard_2023_without_header.csv", dataset, true);
 
     // Call the preprocessing function
     mat X;

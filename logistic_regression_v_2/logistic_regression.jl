@@ -7,8 +7,8 @@ using DataFrames: DataFrame, dropmissing
 
 function preprocess(data::DataFrame)
    
-    y = data.target
-    data = data[:, Not(:target)]
+    y = data.Class
+    data = data[:, Not(:Class)]
   
     # Normalize numerical columns
     stand = Standardizer(count=true)
@@ -21,7 +21,7 @@ end
 
 function main()
     # Load data
-    data = CSV.File("data/synthetic_dataset.csv") |> DataFrame
+    data = CSV.File("data/creditcard_2023.csv") |> DataFrame
     X, y = preprocess(data)
 
     # Split the data, 80% for training and 20% for testing, shuffles the data

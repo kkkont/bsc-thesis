@@ -19,8 +19,8 @@ def preprocess(data):
 
 def main():
     # Load dataset
-    data = pd.read_csv('data/synthetic_dataset.csv')
-    target_col = 'target'
+    data = pd.read_csv('data/creditcard_2023.csv')
+    target_col = 'Class'
 
     # Preprocess data
     data = preprocess(data)
