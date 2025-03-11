@@ -1,13 +1,13 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
+from sklearn import tree
 
 def preprocess(data):
 
-    # Identify categorical and numerical columns
-    numerical_cols = data.select_dtypes(include=['int64', 'float64']).columns[:-1]
+    # Identify numerical columns excluding the target column
+    numerical_cols = data.drop(columns=['Class']).select_dtypes(include=['int64', 'float64']).columns
 
     # Scale numerical columns
     scaler = StandardScaler()
@@ -30,12 +30,12 @@ def main():
     
     # Train-test split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-
-    model = LogisticRegression(max_iter=1000)
-    model.fit(X_train, y_train)
+    
+    clf = tree.DecisionTreeClassifier()
+    clf = clf.fit(X_train, y_train)
 
     # Make predictions
-    y_pred = model.predict(X_test)
+    y_pred = clf.predict(X_test)
 
     # Evaluate accuracy
     accuracy = accuracy_score(y_test, y_pred)
