@@ -42,7 +42,7 @@ int main() {
     Row<size_t> trainLabels, testLabels;
     data::Split(X, y, trainData, testData, trainLabels, testLabels, 0.20);
 
-    // Train the logistic regression model
+    // Train the model
     svm::LinearSVM<> svm;   
     // Train the model for 2 classes
     svm.Train(trainData, trainLabels, 2);   

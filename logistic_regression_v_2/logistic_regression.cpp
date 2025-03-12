@@ -3,7 +3,6 @@
 #include <mlpack/core/data/scaler_methods/standard_scaler.hpp>
 #include <mlpack/core/data/split_data.hpp>
 
-
 using namespace std;
 using namespace arma;
 using namespace mlpack;
@@ -43,9 +42,13 @@ int main() {
     Row<size_t> trainLabels, testLabels;
     data::Split(X, y, trainData, testData, trainLabels, testLabels, 0.20);
 
+    // Defining optimizer as MLPack's only way to set max iterations is through the optimizer and without max_iterations our model will not converge
+    ens::Adam optimizer(0.001, 32); // Default learning rate and batch size
+    optimizer.MaxIterations() = 100 * dataset.n_cols; // Defining the number of iterations, choosing 100 because python and Julia have this as default
+    
     // Train the logistic regression model
-    regression::LogisticRegression<> lr; 
-    lr.Train(trainData, trainLabels);   
+    regression::LogisticRegression lr; 
+    lr.Train(trainData, trainLabels, optimizer);   
     
     // Predict the labels for the test data
     Row<size_t> predictions;

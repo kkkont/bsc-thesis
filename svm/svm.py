@@ -31,7 +31,8 @@ def main():
     # Train-test split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
     
-    clf = svm.LinearSVC(max_iter=1100)
+    # Load and train the model
+    clf = svm.LinearSVC()
     clf = clf.fit(X_train, y_train)
 
     # Make predictions

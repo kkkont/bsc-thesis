@@ -31,6 +31,7 @@ def main():
     # Train-test split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
     
+    # Load and train the model
     clf = RandomForestClassifier(n_estimators=2)
     clf = clf.fit(X_train, y_train)
 

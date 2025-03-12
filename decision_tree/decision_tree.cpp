@@ -42,7 +42,7 @@ int main() {
     Row<size_t> trainLabels, testLabels;
     data::Split(X, y, trainData, testData, trainLabels, testLabels, 0.20);
 
-    // Train the logistic regression model
+    // Train the model
     tree::DecisionTree tree;   
     // Train the model for 2 classes
     tree.Train(trainData, trainLabels, 2);   
