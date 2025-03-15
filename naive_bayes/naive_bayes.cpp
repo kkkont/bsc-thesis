@@ -9,7 +9,6 @@ using namespace mlpack;
 
 std::tuple<mat, Row<size_t>> preprocess(mat dataset) {
     // Shuffle the dataset using armadillo's shuffle function
-    arma_rng::set_seed_random();
     uvec indices = shuffle(regspace<uvec>(0, dataset.n_cols - 1));
     dataset = dataset.cols(indices);
 
@@ -28,6 +27,11 @@ std::tuple<mat, Row<size_t>> preprocess(mat dataset) {
 }
 
 int main() {
+    // Set the seed using std::random_device
+    std::random_device rd;
+    int seed = rd();
+    arma_rng::set_seed(seed);
+
     // Read the CSV file
     mat dataset;
     data::Load("../data/creditcard_2023_without_header.csv", dataset, true);
@@ -42,7 +46,7 @@ int main() {
     Row<size_t> trainLabels, testLabels;
     data::Split(X, y, trainData, testData, trainLabels, testLabels, 0.20);
 
-    // Train the logistic regression model
+    // Train the model
     naive_bayes::NaiveBayesClassifier nbc;
     // Train the model for 2 classes
     nbc.Train(trainData, trainLabels, 2);   
@@ -53,7 +57,7 @@ int main() {
 
     // Compute accuracy
     size_t correct = arma::accu(predictions == testLabels);
-    double accuracy = (double) correct / testLabels.n_elem * 100.0;
-
-    cout << "Accuracy on test set: " << accuracy << "%" << endl;
+    double accuracy = (double) correct / testLabels.n_elem;
+    cout << "Random seed: " << seed << endl;
+    cout << "Accuracy: " << accuracy << endl;
 }

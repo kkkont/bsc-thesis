@@ -1,4 +1,5 @@
 import pandas as pd
+import random 
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -17,8 +18,10 @@ def preprocess(data):
 
 
 def main():
+    # Set random seed for reproducibility
+    randint = random.randint(0, 1000) 
     # Load dataset
-    data = pd.read_csv('data/creditcard_2023.csv')
+    data = pd.read_csv('../data/creditcard_2023.csv')
     target_col = 'Class'
 
     # Preprocess data
@@ -29,10 +32,10 @@ def main():
     y = data[target_col]  # Target variable
     
     # Train-test split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state = randint)
     
     # Load and train the model
-    clf = tree.DecisionTreeClassifier()
+    clf = tree.DecisionTreeClassifier(random_state=randint)
     clf = clf.fit(X_train, y_train)
 
     # Make predictions
@@ -40,7 +43,9 @@ def main():
 
     # Evaluate accuracy
     accuracy = accuracy_score(y_test, y_pred)
-    print(f"Model Accuracy: {accuracy:.4f}")
+    print(f"Random Seed: {randint}")
+    print(f"Accuracy: {accuracy}")
+
 
 if __name__ == "__main__":
     main()

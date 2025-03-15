@@ -4,6 +4,7 @@ using MLJ
 using MLJDecisionTreeInterface
 using MLJBase: machine, fit!, transform, coerce
 using DataFrames: DataFrame, dropmissing
+using Random
 
 function preprocess(data::DataFrame)
     # Extract target column
@@ -21,16 +22,19 @@ function preprocess(data::DataFrame)
 end
 
 function main()
+    # Generate and print random seed
+    rng = rand(1:1000)
+
     # Load data
-    data = CSV.File("data/creditcard_2023.csv") |> DataFrame
+    data = CSV.File("../data/creditcard_2023.csv") |> DataFrame
     X, y = preprocess(data)
 
     # Split the data, 80% for training and 20% for testing, shuffles the data
-    (X_train, X_test), (y_train, y_test) = partition((X, y), 0.8, shuffle=true, multi=true)
+    (X_train, X_test), (y_train, y_test) = partition((X, y), 0.8, rng = rng, multi=true)
 
     # Load the model
     DecisionTreeClassifier = @load DecisionTreeClassifier pkg=DecisionTree
-    model = DecisionTreeClassifier()
+    model = DecisionTreeClassifier(rng=rng)
 
     # Train the model
     mach = machine(model, X_train, y_train)
@@ -40,8 +44,9 @@ function main()
     ŷ = predict(mach, X_test)
     ŷ_labels = mode.(ŷ) 
 
-    #Calculate accuracy
+    # Calculate accuracy
     accuracy = mean(ŷ_labels .== y_test)
+    println("Random Seed: ", rng)
     println("Accuracy: $accuracy")
 end
 
