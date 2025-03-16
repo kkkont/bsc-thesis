@@ -2,7 +2,6 @@
 #include <mlpack/methods/logistic_regression/logistic_regression.hpp>
 #include <mlpack/core/data/scaler_methods/standard_scaler.hpp>
 #include <mlpack/core/data/split_data.hpp>
-#include <random>
 
 using namespace std;
 using namespace arma;

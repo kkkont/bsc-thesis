@@ -2,7 +2,6 @@
 #include <mlpack/methods/decision_tree/decision_tree.hpp>
 #include <mlpack/core/data/scaler_methods/standard_scaler.hpp>
 #include <mlpack/core/data/split_data.hpp>
-#include <ctime>
 
 using namespace std;
 using namespace arma;

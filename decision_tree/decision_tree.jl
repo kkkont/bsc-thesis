@@ -4,7 +4,7 @@ using MLJ
 using MLJDecisionTreeInterface
 using MLJBase: machine, fit!, transform, coerce
 using DataFrames: DataFrame, dropmissing
-using Random
+
 
 function preprocess(data::DataFrame)
     # Extract target column
