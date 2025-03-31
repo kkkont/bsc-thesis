@@ -2,8 +2,8 @@ from scipy.stats import shapiro, zscore
 import numpy as np
 import pandas as pd 
 
-language = "cpp"
-algorithm_file = "decision_tree.csv"
+language = "python"
+algorithm_file = "naive_bayes_v2.csv"
 
 # Read the CSV file
 df = pd.read_csv(f"experiment_data/{algorithm_file}", delimiter=";")  
@@ -40,17 +40,13 @@ for col in numerical_columns:
     else:
         print(f"❌ {col} is NOT normally distributed (p-value = {p_value})\n")
 
-""" import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy.stats as stats
 
 # Plot histogram
-sns.histplot(data["total_energy"], kde=True, bins=10)
+sns.histplot(data["elapsed_time"], kde=True, bins=10)
 plt.title("Distribution of Accuracy")
 plt.show()
 
-# Q-Q plot (should be a straight line if normal)
-stats.probplot(data["total_energy"], dist="norm", plot=plt)
-plt.title("Q-Q Plot of Accuracy")
-plt.show()
- """
+
