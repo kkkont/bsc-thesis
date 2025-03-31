@@ -33,7 +33,7 @@ function main()
 
     # Load the model
     SVMLinearClassifier = @load SVMLinearClassifier pkg=MLJScikitLearnInterface
-    model = SVMLinearClassifier(random_state=rng)
+    model = SVMLinearClassifier(random_state=rng, max_iter=1000)
 
     # Train the model
     mach = machine(model, X_train, y_train)

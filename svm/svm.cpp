@@ -50,11 +50,11 @@ int main() {
     svm::LinearSVM<> svm;   
 
      // Defining optimizer as MLPack's only way to set max iterations is through the optimizer and without max_iterations our model will not converge
-     ens::Adam optimizer(0.001, 32); // Default learning rate and batch size
-     optimizer.MaxIterations() = 1000 * dataset.n_rows; // Defining the number of iterations, choosing 1000 because python and Julia have this as default
-     
+    ens::AMSGrad optimizer(0.01 /* step size */, 16 /* batch size */);
+    optimizer.MaxIterations() = 1000 * dataset.n_rows; 
+
     // Train the model for 2 classes
-    svm.Train(trainData, trainLabels, 2);   
+    svm.Train(trainData, trainLabels, 2, optimizer);   
     
     // Predict the labels for the test data
     Row<size_t> predictions;
