@@ -2,8 +2,8 @@ from scipy.stats import shapiro, zscore
 import numpy as np
 import pandas as pd 
 
-language = "python"
-algorithm_file = "naive_bayes_v2.csv"
+language = "julia"
+algorithm_file = "svm.csv"
 
 # Read the CSV file
 df = pd.read_csv(f"experiment_data/{algorithm_file}", delimiter=";")  
@@ -14,9 +14,7 @@ print("Rows: ",len(data))
 
 
 # Numerical columns to check for outliers and normality
-numerical_columns = ["total_energy", "elapsed_time", "accuracy"]
-for col in numerical_columns:
-    data[col] = data[col].str.replace(',', '.').astype(float)
+numerical_columns = ["net_energy", "elapsed_time", "accuracy"]
 
 for col in numerical_columns:
     z_scores = np.abs(zscore(data[col]))  # Compute Z-score for this column
@@ -40,7 +38,7 @@ for col in numerical_columns:
     else:
         print(f"❌ {col} is NOT normally distributed (p-value = {p_value})\n")
 
-import matplotlib.pyplot as plt
+""" import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy.stats as stats
 
@@ -48,5 +46,5 @@ import scipy.stats as stats
 sns.histplot(data["elapsed_time"], kde=True, bins=10)
 plt.title("Distribution of Accuracy")
 plt.show()
-
+ """
 
