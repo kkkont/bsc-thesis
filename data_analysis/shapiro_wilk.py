@@ -2,8 +2,8 @@ from scipy.stats import shapiro, zscore
 import numpy as np
 import pandas as pd 
 
-language = "julia"
-algorithm_file = "svm.csv"
+language = "cpp"
+algorithm_file = "logistic_regression.csv"
 
 # Read the CSV file
 df = pd.read_csv(f"experiment_data/{algorithm_file}", delimiter=";")  
@@ -14,7 +14,7 @@ print("Rows: ",len(data))
 
 
 # Numerical columns to check for outliers and normality
-numerical_columns = ["net_energy", "elapsed_time", "accuracy"]
+numerical_columns = ["total_energy", "elapsed_time", "accuracy"]
 
 for col in numerical_columns:
     z_scores = np.abs(zscore(data[col]))  # Compute Z-score for this column
