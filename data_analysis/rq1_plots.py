@@ -10,7 +10,7 @@ for col in ["energy-cores", "energy-gpu", "energy-pkg", "energy-psys", "total_en
     df[col] = df[col].astype(str).str.replace(",", ".").astype(float)
 
 df["algorithm"] = df["algorithm"].str.replace("_", " ").str.title()
-
+df["elapsed_time"] = df["elapsed_time"] * 1000
 # --- Plot settings ---
 sns.set(style="whitegrid", font_scale=1.1)
 

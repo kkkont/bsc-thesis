@@ -12,9 +12,11 @@ for algorithm in algorithms:
     # Convert numeric columns (handle commas in decimal values)
     for col in ["net_energy", "elapsed_time", "accuracy"]:
         df[col] = df[col].astype(float)
-
+    print("\nAverage values per language:")
+    grouped_means = df.groupby("language")[["net_energy", "elapsed_time", "accuracy"]].mean()
+    print(grouped_means.round(4))  
     # Check normality
-    print("Normality Test Results:")
+    print("\nNormality Test Results:")
     normality_results = {}
     for col in ["net_energy", "elapsed_time", "accuracy"]:
         stat, p = shapiro(df[col])
