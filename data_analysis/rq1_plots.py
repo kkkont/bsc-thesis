@@ -47,7 +47,7 @@ for metric in metrics:
 
     g.set_titles("{col_name}")
     g.set_axis_labels("", metric_labels[metric])
-    g.set_xticklabels(["C++", "Python", "Julia"])
+    g.set_xticklabels(["C++", "Julia", "Python"])
 
     if metric == "accuracy":
         for ax in g.axes.flatten():
