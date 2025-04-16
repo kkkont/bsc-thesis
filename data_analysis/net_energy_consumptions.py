@@ -7,7 +7,6 @@ filename = "decision_tree.csv"
 data = pd.read_csv("experiment_data/baseline.csv", delimiter=";")  
 
 data["total_energy"] = data["total_energy"].str.replace(',', '.').astype(float)
-
 # Calculate average total energy consumption
 avg_total_energy = data["total_energy"].mean()
 

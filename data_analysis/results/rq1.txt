@@ -1,0 +1,140 @@
+
+
+====================== LOGISTIC_REGRESSION ======================
+
+Average values per language:
+          net_energy  elapsed_time  accuracy
+language                                    
+cpp         271.3255        6.9002    0.9643
+julia      1052.5135       26.8601    0.9648
+python      243.6133        5.6097    0.9648
+
+--- Net Energy ---
+Shapiro-Wilk p-value: 9.89158312533042e-14
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 4.346950281905218e-17
+Effect size (ε²): 0.8629
+
+--- Elapsed Time ---
+Shapiro-Wilk p-value: 1.7263708014502796e-13
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 4.142968248199508e-17
+Effect size (ε²): 0.8641
+
+--- Accuracy ---
+Shapiro-Wilk p-value: 0.2269951519414386
+✅ Data is normally distributed → Using ANOVA
+ANOVA p-value: 0.00013101170541312773
+Effect size (η²): 0.1938
+
+
+====================== DECISION_TREE ======================
+
+Average values per language:
+          net_energy  elapsed_time  accuracy
+language                                    
+cpp        3479.4224       86.7216    0.9960
+julia      2420.2552       57.1750    0.9984
+python     1348.2798       34.4604    0.9979
+
+--- Net Energy ---
+Shapiro-Wilk p-value: 8.877521383290772e-08
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 1.5945261926460417e-16
+Effect size (ε²): 0.8628
+
+--- Elapsed Time ---
+Shapiro-Wilk p-value: 7.503123135871351e-08
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 1.5945261926460417e-16
+Effect size (ε²): 0.8628
+
+--- Accuracy ---
+Shapiro-Wilk p-value: 2.6504428615586284e-09
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 2.076526219508788e-16
+Effect size (ε²): 0.8564
+
+
+====================== RANDOM_FOREST ======================
+
+Average values per language:
+          net_energy  elapsed_time  accuracy
+language                                    
+cpp        4555.7424       91.2601    0.9998
+julia      6123.1259      157.9786    0.9999
+python      345.8821        9.0939    0.9977
+
+--- Net Energy ---
+Shapiro-Wilk p-value: 7.730803889833401e-11
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 1.0320911949315775e-17
+Effect size (ε²): 0.8662
+
+--- Elapsed Time ---
+Shapiro-Wilk p-value: 1.675261231202776e-09
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 1.0320911949315775e-17
+Effect size (ε²): 0.8662
+
+--- Accuracy ---
+Shapiro-Wilk p-value: 6.253644262163985e-13
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 3.337986747196553e-14
+Effect size (ε²): 0.6825
+
+
+====================== SVM ======================
+
+Average values per language:
+          net_energy  elapsed_time  accuracy
+language                                    
+cpp         140.1038        3.4490    0.9507
+julia      2331.8168       95.1777    0.9627
+python      209.5324        5.6402    0.9630
+
+--- Net Energy ---
+Shapiro-Wilk p-value: 2.60016248606188e-13
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 9.822767283382406e-17
+Effect size (ε²): 0.8641
+
+--- Elapsed Time ---
+Shapiro-Wilk p-value: 2.375208718108559e-13
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 9.822767283382406e-17
+Effect size (ε²): 0.8641
+
+--- Accuracy ---
+Shapiro-Wilk p-value: 5.793873591855553e-12
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 1.0061245543950678e-12
+Effect size (ε²): 0.6416
+
+
+====================== NAIVE_BAYES ======================
+
+Average values per language:
+          net_energy  elapsed_time  accuracy
+language                                    
+cpp         163.0660        3.8268    0.9192
+julia       868.2240       22.1303    0.9514
+python      130.0113        3.2494    0.9190
+
+--- Net Energy ---
+Shapiro-Wilk p-value: 3.5019278109085536e-13
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 1.5945261926460417e-16
+Effect size (ε²): 0.8628
+
+--- Elapsed Time ---
+Shapiro-Wilk p-value: 2.150278072158038e-13
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 1.5945261926460417e-16
+Effect size (ε²): 0.8628
+
+--- Accuracy ---
+Shapiro-Wilk p-value: 6.528149886710207e-13
+❌ Data is not normally distributed → Using Kruskal-Wallis
+Kruskal-Wallis p-value: 1.0141407089261328e-12
+Effect size (ε²): 0.6492

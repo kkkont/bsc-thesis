@@ -1,7 +1,6 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
 
 # --- Load & clean data ---
 df = pd.read_csv("experiment_data/merged_data.csv", delimiter=";")
@@ -11,6 +10,8 @@ for col in ["energy-cores", "energy-gpu", "energy-pkg", "energy-psys", "total_en
 
 df["algorithm"] = df["algorithm"].str.replace("_", " ").str.title()
 df["elapsed_time"] = df["elapsed_time"] * 1000
+df["accuracy"] = df["accuracy"] * 100 
+
 # --- Plot settings ---
 sns.set(style="whitegrid", font_scale=1.1)
 
@@ -49,14 +50,11 @@ for metric in metrics:
     g.set_axis_labels("", metric_labels[metric])
     g.set_xticklabels(["C++", "Julia", "Python"])
 
-    if metric == "accuracy":
-        for ax in g.axes.flatten():
-            ax.yaxis.set_major_formatter(mtick.PercentFormatter(xmax=1.0))
 
     g.fig.suptitle(f"{metric_labels[metric]} by Language Across Algorithms", fontsize=18, fontweight="bold")
     g.fig.subplots_adjust(top=0.88)
  # Save to file
-    filename = f"plots/{metric}_by_language.png"
+    filename = f"plots/rq1/{metric}_by_language.png"
     g.savefig(filename, dpi=300)
     plt.close()
 
