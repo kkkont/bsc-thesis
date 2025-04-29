@@ -48,7 +48,7 @@ for metric in metrics:
 
     g.set_titles("{col_name}")
     g.set_axis_labels("", metric_labels[metric])
-    g.set_xticklabels(["C++", "Julia", "Python"])
+    g.set_xticklabels(["mlpack\n(C++)", "MLJ.jl\n(Julia)", "scikit-learn\n(Python)"])
 
 
     g.fig.suptitle(f"{metric_labels[metric]} by Language Across Algorithms", fontsize=18, fontweight="bold")
