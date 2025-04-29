@@ -51,7 +51,7 @@ for metric in metrics:
     g.set_xticklabels(["mlpack\n(C++)", "MLJ.jl\n(Julia)", "scikit-learn\n(Python)"])
 
 
-    g.fig.suptitle(f"{metric_labels[metric]} by Language Across Algorithms", fontsize=18, fontweight="bold")
+    g.fig.suptitle(f"{metric_labels[metric]} by Library (Language) Across Algorithms", fontsize=18, fontweight="bold")
     g.fig.subplots_adjust(top=0.88)
  # Save to file
     filename = f"plots/rq1/{metric}_by_language.png"
