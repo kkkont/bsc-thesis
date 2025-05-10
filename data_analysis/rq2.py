@@ -1,8 +1,8 @@
 import pandas as pd
 
-# Output file
-output_file = "data_analysis/results/rq2.txt"
+# This script analyzes data for research question 2 (RQ2) of the paper
 
+output_file = "data_analysis/results/rq2.txt"
 df = pd.read_csv("experiment_data/merged_data.csv", delimiter=";")
 
 for col in ["energy-cores", "energy-gpu", "energy-pkg", "energy-psys", 

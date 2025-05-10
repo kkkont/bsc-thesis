@@ -1,5 +1,7 @@
 import time
 
+# This script performs a warm-up by running a Fibonacci function for a specified duration.
+
 def fibonacci(n):
     if n <= 1:
         return n

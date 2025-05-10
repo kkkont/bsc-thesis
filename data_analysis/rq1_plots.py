@@ -3,6 +3,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
+# This script generates plots for research question 1 (RQ1) of the paper
+
 df = pd.read_csv("experiment_data/merged_data.csv", delimiter=";")
 
 for col in ["energy-cores", "energy-gpu", "energy-pkg", "energy-psys", "total_energy", "elapsed_time", "accuracy", "net_energy"]:

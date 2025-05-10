@@ -2,9 +2,9 @@ import pandas as pd
 from scipy.stats import shapiro, kruskal, f_oneway
 import pingouin as pg
 
-# Output file path
-output_file = "data_analysis/results/rq1.txt"
+# This script analyses data for research question 1 (RQ1) of the paper
 
+output_file = "data_analysis/results/rq1.txt"
 algorithms = {"decision_tree", "naive_bayes", "logistic_regression", "random_forest", "svm"}
 
 with open(output_file, "w") as f:

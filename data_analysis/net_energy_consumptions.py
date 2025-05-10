@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd 
 
+# This script calculates the net energy consumption for each measurement
+
 filename = "decision_tree.csv" # Replace according to the algorithm being analyzed :)
 
 # Read the baseline measurements CSV file
