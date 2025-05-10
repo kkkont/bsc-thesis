@@ -1,8 +1,8 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 
-# --- Load & clean data ---
 df = pd.read_csv("experiment_data/merged_data.csv", delimiter=";")
 
 for col in ["energy-cores", "energy-gpu", "energy-pkg", "energy-psys", "total_energy", "elapsed_time", "accuracy", "net_energy"]:
@@ -12,12 +12,8 @@ df["algorithm"] = df["algorithm"].str.replace("_", " ").str.title()
 df["elapsed_time"] = df["elapsed_time"] * 1000
 df["accuracy"] = df["accuracy"] * 100 
 
-# --- Plot settings ---
 sns.set(style="whitegrid", font_scale=1.1)
-
 metrics = ["net_energy", "elapsed_time", "accuracy"]
-
-# Define labels with units
 metric_labels = {
     "net_energy": "Energy Consumption (Joules)",
     "elapsed_time": "Elapsed Time (ms)",
@@ -25,36 +21,38 @@ metric_labels = {
 }
 
 for metric in metrics:
-    g = sns.catplot(
-        data=df,
-        x="language", y=metric,
-        col="algorithm",
-        kind="box",
-        col_wrap=3,
-        height=4,
-        sharey=False,
-        palette="pastel",
-        linewidth=1.5,
-        fliersize=3,
-        boxprops=dict(alpha=0.8),
-    )
+    algorithms = df["algorithm"].unique()
+    n = len(algorithms)
+    ncols = 3
+    nrows = (n + ncols - 1) // ncols
 
-    for ax in g.axes.flatten():
-        sns.swarmplot(
-            data=df[df["algorithm"] == ax.get_title()],
-            x="language", y=metric,
-            color=".25", size=2, ax=ax
-        )
+    fig, axes = plt.subplots(nrows=nrows, ncols=ncols, figsize=(ncols*5, nrows*4), constrained_layout=True)
+    axes = axes.flatten()
+    palette = sns.color_palette("pastel")
 
-    g.set_titles("{col_name}")
-    g.set_axis_labels("", metric_labels[metric])
-    g.set_xticklabels(["mlpack\n(C++)", "MLJ.jl\n(Julia)", "scikit-learn\n(Python)"])
+    for i, algo in enumerate(algorithms):
+        ax = axes[i]
+        subset = df[df["algorithm"] == algo]
+        sns.boxplot(data=subset, x="language", y=metric, palette=palette, linewidth=1.5, ax=ax)
+        ax.set_title(algo)
+        ax.set_xlabel("")
+        ax.set_ylabel(metric_labels[metric])
+        ax.set_xticklabels(["mlpack\n(C++)", "MLJ.jl\n(Julia)", "scikit-learn\n(Python)"])
 
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
 
-    g.fig.suptitle(f"{metric_labels[metric]} by Library (Language) Across Algorithms", fontsize=18, fontweight="bold")
-    g.fig.subplots_adjust(top=0.88)
- # Save to file
+    fig.suptitle(f"{metric_labels[metric]} by Library (Language) Across Algorithms", fontsize=18, fontweight="bold")
+
+    ####### LEGEND #######
+
+    language_order = ["mlpack", "MLJ.jl", "scikit-learn"]
+    labels = ["mlpack (C++)", "MLJ.jl (Julia)", "scikit-learn (Python)"]
+    handles = [Patch(color=palette[i], label=labels[i]) for i in range(len(labels))]
+    fig.legend(handles=handles, loc='lower right',  title="Library (Language)")
+
+    ######################
+
     filename = f"plots/rq1/{metric}_by_language.png"
-    g.savefig(filename, dpi=300)
+    fig.savefig(filename, dpi=300)
     plt.close()
-
