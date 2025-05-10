@@ -4,6 +4,7 @@ This section describes the software environment and tools used for the project. 
 
 ## 1. Project Structure 
 
+```
 data_analysis
    |-- net_energy_consumptions.py
    |-- results
@@ -47,6 +48,7 @@ svm
    |-- svm.cpp
    |-- svm.jl
    |-- svm.py
+```
 
 ## 2. Python Environment
 
